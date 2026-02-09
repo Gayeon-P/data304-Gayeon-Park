@@ -1,0 +1,170 @@
+---
+title: "hw5"
+format: html
+output-file: "index"
+---
+
+![Excersise 2_Time map](https://xeno.graphics/wp-content/uploads/2018/07/timemap.png){width="70%"}
+
+## **Excercise_2**
+
+-   What marks are being used?
+
+    Point marks
+
+-   What variables are mapped to which properties?
+
+    X-axis = Time Before Tweet
+
+    Y-axis = Time After Tweet
+
+    Color = Time of day the tweet was sent
+
+-   What is the main story of this graphic?
+
+    Measurning how many times people used social media for their purpose
+
+-   What makes it a good graphic?
+
+    Clear labeling, color adds, clear grouping
+
+-   What features do you think you would know how to implement in Vega-Lite?
+
+    x,y encoding
+
+    color hue
+
+    scatterplot point marks
+
+    continuous color legend
+
+-   Are there any features of the graphic that you would not know how to do in Vega-Lite? If so, list them.
+
+    NA
+
+## **Excercise_3**
+```{r}
+library(vegawidget)
+' 
+
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+
+  "data": {
+    "url": "https://calvin-data304.netlify.app/data/weather-with-dates.csv"
+  },
+
+  "transform": [
+    {
+      "calculate": "(datum.temp_max + datum.temp_min) / 2",
+      "as": "avg_temp"
+    }
+  ],
+
+  "facet": {
+    "field": "year",
+    "type": "ordinal",
+    "title": "Mean Monthly Temperature by Year"
+  },
+
+  "spec": {
+    "mark": {
+      "type": "line",
+      "point": true
+    },
+
+    "encoding": {
+      "x": {
+        "field": "month",
+        "type": "quantitative",
+        "title": "Month"
+      },
+      "y": {
+        "aggregate": "mean",
+        "field": "avg_temp",
+        "type": "quantitative",
+        "title": "Mean Temperature"
+      }
+    }
+  }
+}
+' |> as_vegaspec()
+```
+
+```{r}
+'
+
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+
+
+  "data": {
+    "url": "https://calvin-data304.netlify.app/data/weather-with-dates.csv"
+  },
+
+  "title": "Weather in Seattle",
+
+
+  "params": [
+    {
+      "name": "YearSelect",
+      "value": 2012,
+      "bind": {
+        "input": "select",
+        "options": [2012,2013,2014,2015],
+        "name": "Select Year: "
+      }
+    }
+  ],
+
+  "transform": [
+    {
+      "filter": "datum.location == Seattle"
+    },
+    {
+      "calculate": "year(datum.date)",
+      "as": "year"
+    },
+    {
+      "calculate": "month(datum.date)",
+      "as": "month"
+    },
+    {
+      "filter": "datum.year == YearSelect"
+    }
+  ],
+
+  "width": 700,
+  "height": 250,
+
+  "mark": "bar",
+
+  "encoding": {
+    "x": {
+      "field": "month",
+      "type": "ordinal",
+      "title": "Month",
+      "sort": [1,2,3,4,5,6,7,8,9,10,11,12]
+    },
+
+    "y": {
+      "aggregate": "count",
+      "type": "quantitative",
+      "title": "Count",
+      "scale": { "domain": [0, 30] }
+    },
+
+    "fill": {
+      "field": "weather",
+      "type": "nominal",
+      "title": "Weather Type"
+    },
+
+    "xOffset": {
+      "field": "weather"
+    }
+  }
+}
+' |> as_vegaspec()
+```
+
