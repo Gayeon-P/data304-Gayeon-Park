@@ -118,9 +118,7 @@ library(vegawidget)
   ],
 
   "transform": [
-    {
-      "filter": "datum.location == Seattle"
-    },
+    
     {
       "calculate": "year(datum.date)",
       "as": "year"
@@ -130,7 +128,7 @@ library(vegawidget)
       "as": "month"
     },
     {
-      "filter": "datum.year == YearSelect"
+      "filter": "datum.year == YearSelect & datum.location == \\"Seattle\\""
     }
   ],
 
