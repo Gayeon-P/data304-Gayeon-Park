@@ -72,6 +72,8 @@ library(vegawidget)
       "type": "line",
       "point": true
     },
+  "width":150,
+  "height":150,
 
     "encoding": {
       "x": {
