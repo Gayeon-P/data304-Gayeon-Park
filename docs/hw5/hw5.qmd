@@ -43,6 +43,7 @@ output-file: "index"
     NA
 
 ## **Excercise_3**
+
 ```{r}
 library(vegawidget)
 ' 
@@ -167,4 +168,3 @@ library(vegawidget)
 }
 ' |> as_vegaspec()
 ```
-
