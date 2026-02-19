@@ -1,0 +1,186 @@
+---
+title: "hw7"
+format: html
+output-file: "index"
+---
+
+## **Excercise 1**
+
+a\. List some guidelines/advice Wilke gives about creating bar charts.
+
+-   Long labels \> replace horizontal bar plot. (Swap X and Y position)
+
+-   Arranging in order of increasing number (e.g. age)
+
+-   Use stack bars with typing actual number whenever you want to see the difference between each values clearly.
+
+-   Dot plot which is able to show clear difference each values and if alphabetical order is unclear to see, then set ordering of the data values.
+
+b\. When is it not advised to use a bar chart? Why?
+
+-   When you want to show appropriate locations along the x or y axis, using dot graph instead of bar chart. It is because the eye is drawn to the middle of the bars rather than to their end points.
+
+c\. What alternatives to bars are mentioned in this chapter?
+
+-   They suggests using dot plots and heatmaps.
+
+d\. What guidance does Wilke give about whether or not to stack bars vs. dodge them (using an offset in Vega-Lite)?
+
+-   Wilke advises stacking bars when you want to show part-to-whole relationships and compare totals, and dodging (side-by-side) bars when you want to compare subgroup values directly across categories.
+
+e\.
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+
+  "data": {
+    "url": "https://gist.githubusercontent.com/honggikim02/392bd1d9909ccd3057e58b4684b60319/raw/a3e8e9d07fc7d34889a8d41008dc7e42c355f689/cow-movies.csv"
+  },
+
+  "mark": {
+    "type": "bar",
+    "color": "royalblue"
+  },
+  "transform": [{"calculate": "datum.amount/1000000",
+  "as": "weekend gross (million USD)"}],
+  "encoding": {
+    "y": {"field": "title_short", "type": "nominal","sort": "-x","title": ""},
+
+    "x": {"field": "weekend gross (million USD)", "type": "quantitative",
+    "scale": {"domain": [0,60]},"axis": {"tickCount":3}}
+  },
+
+  "width": 400,
+  "height": 200
+}
+' |> as_vegaspec()
+```
+
+f\.
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+
+  "data": {
+    "url": "https://gist.githubusercontent.com/honggikim02/1a4d21a208d781a35ad8e67673e8328d/raw/273695945cd24c8496d8b9a69633a5c55dac371c/cow-income.csv"
+  },
+
+  "width": 400,
+  "height": 200,
+  "mark": {"type": "bar"},
+  "transform": [{"filter": "datum.race != \'all\'&& datum.race != \'white_non_hispanic\'"}],
+  
+
+  "encoding": {
+    "x": {
+      "field": "race",
+      "type": "nominal",
+      "title": "",
+      "axis": {"labelAngle": 0},
+      "sort": ["asian", "white", "hispanic", "black"]
+    },
+
+    "y": {
+      "field": "median_income",
+      "type": "quantitative",
+      "title": "median income (USD)"
+      },
+
+    "xOffset": {"field": "age"},
+
+    "color": {"field": "age", "title": "age (yrs)", "scale": {"scheme": "blues"}}
+  }
+}
+' |> as_vegaspec()
+```
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+
+  "data": {
+    "url": "https://gist.githubusercontent.com/honggikim02/1a4d21a208d781a35ad8e67673e8328d/raw/273695945cd24c8496d8b9a69633a5c55dac371c/cow-income.csv"
+  },
+
+  "width": 300,
+  "height": 200,
+  "mark": {"type": "bar"},
+  "transform": [{"filter": "datum.race != \'all\' && datum.race != \'white_non_hispanic\'"}],
+
+  "encoding": {
+    "x": {
+      "field": "age",
+      "type": "nominal",
+      "title": "",
+      "axis": {"labelAngle": 0},
+      "sort": ["asian", "white", "hispanic", "black"]
+    },
+
+    "y": {
+      "field": "median_income",
+      "type": "quantitative",
+      "title": "median income (USD)"
+      },
+    "facet": {"field": "race","columns": 2, "sort": ["asian", "white", "hispanic", "black"]}
+  }
+}
+' |> as_vegaspec()
+```
+
+g\.
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": { 
+    "url": "https://gist.githubusercontent.com/honggikim02/483f5529f1f61a953cc829480d80d843/raw/6daa30370eccdf5318da957e2aaa196162507e58/cow-gapminder.csv" },
+  
+  "height": 300,
+  "width": 400,
+  "mark": {"type": "circle", "color": "blueviolet"},
+  "transform": [{"filter": "datum.year == 2007 && datum.continent == \'Americas\'"}],
+
+  "encoding": {
+
+    "x": {
+      "field": "lifeExp", 
+      "type": "quantitative",
+      "scale": {"domain": [60,80]},
+      "axis": {"labelAngle": 0, "tickCount": 5},
+      "title": "life expectancy (years)"
+    },
+    
+    "y": {"field": "country", 
+    "type": "ordinal", 
+    "title": "",
+    "sort": "-x",
+    "axis": {"grid": true}
+  }
+}
+}
+' |> as_vegaspec()
+```
+
+## **Excercise 2**
+
+a\. Watch [this video](https://youtu.be/r6-3_bdcofg?si=5tw1QBT5ke_A5ak2&t=1398) starting at 12:18 until 49:52. (You are welcome to watch the whole thing if you like.) You will see some things that look familiar from our discussion of perception in class, but there are also a number of additional examples and discussion.
+
+b\. List at least three pieces of advice you can glean from this video that might help you design good graphics.
+
+-   If you have categorical variables in a dot plot, put them on the y-axis, not the x-axis, to improve readability.
+
+-   Don’t automatically start the y-axis at zero—set it to the lowest meaningful value to avoid wasting space (unless zero is necessary for honest comparison, such as in bar charts).
+
+-   Design to
+
+c\. There are two figures in this video that come from Chapter 1 of Tufte ([2001](https://calvin-data304.netlify.app/hw/hw07-perception-and.html#ref-Tufte:2001:Visual)). Did you spot them? Which figures are they?
