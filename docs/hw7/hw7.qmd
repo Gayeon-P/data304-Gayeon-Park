@@ -246,7 +246,7 @@ library(vegawidget)
       "type": "quantitative",
       "scale": {"scheme":"magma"},
       "legend": {"orient": "top"}
-    }, 
+    } 
   }
 }
 ' |> as_vegaspec()
