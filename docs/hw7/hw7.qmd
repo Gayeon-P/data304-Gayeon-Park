@@ -181,6 +181,133 @@ b\. List at least three pieces of advice you can glean from this video that migh
 
 -   Don’t automatically start the y-axis at zero—set it to the lowest meaningful value to avoid wasting space (unless zero is necessary for honest comparison, such as in bar charts).
 
--   Design to
+-   Design graphics to support the comparison you want viewers to make, choosing encodings and layouts that make that comparison visually clear and easy.
 
 c\. There are two figures in this video that come from Chapter 1 of Tufte ([2001](https://calvin-data304.netlify.app/hw/hw07-perception-and.html#ref-Tufte:2001:Visual)). Did you spot them? Which figures are they?
+
+-   The graphic in page 43 which is a narrative graphic of spaces and time.
+-   The graphic in page 46 which is a relational graphic.
+
+## **Exercise 3** 
+
+a\. In Vega-Lite lingo, what makes something be a heat map?
+
+-   Use a rect mark ("mark": "rect')
+
+-   x and y position
+
+-   color
+
+b\. Recreate Figure 6.14 or 6.15 from Wilke ([2019](https://calvin-data304.netlify.app/hw/hw07-perception-and.html#ref-Wilke:2019)) (your choice). Or get fancy and include an interactive element that let’s you select the year to order by. [\[CSV\]](https://calvin-data304.netlify.app/data/cow-internet2.csv)
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": { 
+    "url": "https://gist.githubusercontent.com/honggikim02/64d2cacba5374e559f3372843e62a512/raw/0e57743ef0d78d0706adce66ec581872e3ce4a58/cow-internet2.csv"
+  },
+  
+  "height": 300,
+  "width": 400,
+  "mark": {"type": "rect"},
+
+  "transform": [
+    {
+      "calculate": "datum.year == 2016 ? datum.users : null",
+      "as": "users_2016"
+    }
+  ],
+
+  "encoding": {
+
+    "x": {
+      "field": "year", 
+      "type": "ordinal",
+      "title": ""
+    },
+    
+    "y": {
+      "field": "country", 
+      "type": "nominal", 
+      "title": "",
+      "axis": {"orient": "right"},
+      "sort": {
+        "field": "users_2016",
+        "op": "max",
+        "order": "descending"
+      }
+    },
+
+    "color": {
+      "field": "users",
+      "title": "internet users/100 people",
+      "type": "quantitative",
+      "scale": {"scheme":"magma"},
+      "legend": {"orient": "top"}
+    }, 
+  }
+}
+' |> as_vegaspec()
+```
+
+c\. At around 20:10, Healy presents a possible problem with heat maps, what is it?
+
+-   Healy points out that it’s hard for our eyes to interpret relative color differences in heat maps when colored squares are surrounded by other colored squares, which can distort how we perceive individual values.
+
+d\. But starting at around 44:12, he presents a heat map as a “show pony”. Why isn’t the problem presented earlier an issue here? Is it an issue in the figure you make in part b? Why or why not?
+
+-   Healy shows the later “show pony” heat map to highlight broader patterns and overall structure, not the precise value of each cell. In that case, the problem with color comparisons isn’t important because viewers are looking at big patterns rather than exact comparisons between individual values.
+
+## **Excercise 4 (Pie Chart)** 
+
+a\. What does Healy have to say about pie charts in his video?
+
+-   He mentions pie charts as an example of a graph type is often not a good choice for showing data because people are bad at judging angles and areas, which makes it hard to compare slices accurately.
+
+b\. How does that compare to what Wilke says in Section 10.1 of Wilke ([2019](https://calvin-data304.netlify.app/hw/hw07-perception-and.html#ref-Wilke:2019))?
+
+-   Wilke says pie charts are not always bad. He explains that the best chart depends on what you want to show. Pie charts work well for small datasets and for showing simple parts of a whole, like a clear majority.
+
+c\. What alternatives does Wilke present to pie charts and in what situations does he favor each? (You should be comparing pie charts to two other types of graphics that can be made with the same sort of data.)
+
+-   Wilke presents stacked bar charts and side-by-side bar charts as alternatives to pie charts.
+
+-   Stacked bar charts is to show part to whole relationships and compare totals across groups or over time.
+
+-   Side by side bar charts is to directly compare individual categories with each other. Because all bars share the same baseline, it is easier to compare their sizes precisely.
+
+d\. We won’t make many pie charts, but I suppose you should make at least one. To do this in Vega-Lite, use an arc mark. Recreate Figure 10.1 of Wilke ([2019](https://calvin-data304.netlify.app/hw/hw07-perception-and.html#ref-Wilke:2019)).
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": { 
+    "url": "https://cdn.jsdelivr.net/npm/vega-datasets@3.2.1/data/jobs.json" },
+
+"transform": [
+    {
+      "filter": "datum.year == 1950"
+    },
+    {
+      "filter": {
+        "field": "job", 
+        "oneOf": ["Actor", "Machinist", "Nurse"]
+      }
+    }
+  ],
+
+  "mark": {"type": "arc"},
+  "encoding": {
+    "theta":{
+      "field":"count",
+      "type": "quantitative"},
+
+    "color": {"field": "job", "type": "nominal"}
+   }
+  }
+' |> as_vegaspec()
+```
