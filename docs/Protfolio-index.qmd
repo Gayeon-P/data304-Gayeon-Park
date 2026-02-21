@@ -8,3 +8,4 @@ embed-resources: true
 [HW 5](hw5/index.html)
 [HW 6](hw6/index.html)
 [HW 7](hw7/index.html)
+[HW 8](hw8/index.html)

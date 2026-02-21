@@ -1,0 +1,54 @@
+---
+title: "class"
+format: html
+output-file: "index"
+---
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+   "data": {
+    "url": "https://calvin-data304.netlify.app/data/obesity.csv"},
+  "transform": [
+    {
+      "lookup": "country",
+      "from": {
+        "data": {
+          "url": "https://calvin-data304.netlify.app/data/GDP.csv"
+        },
+        "key": "country",
+        "fields": [
+          "GDP"
+        ]
+      }},
+      {"lookup": "country",
+      "from": {"data": {
+        "url": "https://gist.githubusercontent.com/honggikim02/483f5529f1f61a953cc829480d80d843/raw/6daa30370eccdf5318da957e2aaa196162507e58/cow-gapminder.csv"
+        },
+        "key": "country",
+        "fields": ["continent"]
+        }
+      }
+    ],
+  "mark": {"type": "point", "tooltip": true},
+  "encoding": {
+    "x": {
+      "field": "GDP",
+      "type": "quantitative",
+      "axis": {"format": ".0s"},
+       "scale": {"type": "log"}
+    },
+    "y": {
+      "field": "obesity",
+      "type": "quantitative"
+    },
+    "facet":{"field": "continent", "type": "nominal", "columns": 2},
+    "color": {"field": "continent"}
+  },
+  "height": 200,
+  "width": 300
+  }
+' |> as_vegaspec()
+```

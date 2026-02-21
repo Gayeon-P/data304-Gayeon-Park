@@ -1,0 +1,150 @@
+---
+title: "hw8"
+format: html
+output-file: "index"
+---
+
+## Excercise 1
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": { 
+    "url": "https://calvin-data304.netlify.app/data/swd-lets-practice-ex-2-3.json"
+  },
+  
+  "height": 300,
+  "width": 400,
+  "mark": "bar",
+  "transform": [{"fold": ["capacity", "demand"], "as": ["key", "value"]}],
+
+  "encoding": {
+    "x": {
+      "field": "date", 
+      "type": "ordinal",
+      "title": ""
+    },
+    
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "title": ""
+    },
+
+    "xOffset": {
+      "field": "key",
+      "type": "nominal"
+    },
+
+    "color": {"field": "key"}
+  }
+}
+' |> as_vegaspec()
+```
+
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": { 
+    "url": "https://calvin-data304.netlify.app/data/swd-lets-practice-ex-2-3.json"
+  },
+  "height": 400,
+  "width": 300,
+  "mark": "bar",
+  "transform": [{"fold": ["capacity", "demand"], "as": ["key", "value"]}],
+
+  "encoding": {
+      "y": {
+      "field": "value",
+      "type": "quantitative",
+      "title": "",
+      "stack": null
+    },
+
+    "x": {
+      "field": "date", 
+      "type": "ordinal",
+      "title": ""
+    },
+
+    "color": {"field": "key"},
+    "opacity":{"value":0.6}
+  }
+}
+
+' |> as_vegaspec()
+```
+
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": { 
+    "url": "https://calvin-data304.netlify.app/data/swd-lets-practice-ex-2-3.json"
+  },
+  "height": 300,
+  "width": 400,
+  "mark": "line",
+  "transform": [{"fold": ["capacity", "demand"], "as": ["key", "value"]}],
+
+  "encoding": {
+      "y": {
+      "field": "value",
+      "type": "quantitative",
+      "title": ""
+    },
+
+    "x": {
+      "field": "date", 
+      "type": "ordinal",
+      "title": ""
+    },
+
+    "color": {"field": "key"}
+  }
+}
+' |> as_vegaspec()
+```
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": { 
+    "url": "https://calvin-data304.netlify.app/data/swd-lets-practice-ex-2-3.json"
+  },
+  "height": 300,
+  "width": 400,
+
+  "layer": [
+    {
+      "mark": "rule",
+      "encoding": {
+        "x": {"field": "date", "type": "ordinal"},
+        "y": {"field": "capacity", "type": "quantitative"},
+        "y2": {"field": "demand"}
+      }
+    },
+
+    {
+      "mark": "point",
+      "transform": [
+        {"fold": ["capacity", "demand"], "as": ["key", "value"]}
+      ],
+      "encoding": {
+        "x": {"field": "date", "type": "ordinal","title":""},
+        "y": {"field": "value", "type": "quantitative","title":""},
+        "color": {"field": "key"}
+      }
+    }
+  ]
+}
+' |> as_vegaspec()
+```
