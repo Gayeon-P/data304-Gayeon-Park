@@ -5,6 +5,7 @@ output-file: "index"
 ---
 
 ## Excercise 1
+
 ```{r}
 library(vegawidget)
 ' 
@@ -43,7 +44,6 @@ library(vegawidget)
 ' |> as_vegaspec()
 ```
 
-
 ```{r}
 library(vegawidget)
 ' 
@@ -78,7 +78,6 @@ library(vegawidget)
 
 ' |> as_vegaspec()
 ```
-
 
 ```{r}
 library(vegawidget)
@@ -148,3 +147,137 @@ library(vegawidget)
 }
 ' |> as_vegaspec()
 ```
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": { 
+    "url": "https://calvin-data304.netlify.app/data/swd-lets-practice-ex-2-3.json"
+  },
+  "height": 400,
+  "width": 300,
+
+  "transform": [
+    {
+      "calculate": "datum.demand - datum.capacity",
+      "as": "unmet_demand"
+    },
+    {
+      "fold": ["capacity", "unmet_demand"],
+      "as": ["key", "value"]
+    }
+  ],
+
+  "mark": "bar",
+
+  "encoding": {
+    "x": {
+      "field": "date",
+      "type": "ordinal",
+      "title": ""
+    },
+
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "stack": "zero",
+      "title": ""
+    },
+
+    "color": {
+      "field": "key",
+      "title": "Type"
+    }
+  }
+}
+' |> as_vegaspec()
+```
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": { 
+    "url": "https://calvin-data304.netlify.app/data/swd-lets-practice-ex-2-3.json"
+  },
+  "height": 300,
+  "width": 500,
+
+  "transform": [
+    {
+      "calculate": "datum.demand - datum.capacity",
+      "as": "unmet_demand"
+    }],
+  
+  "mark": {"type": "line", "point":true},
+
+  "encoding": {
+    "x": {
+      "field": "date",
+      "type": "ordinal",
+      "title": ""
+    },
+
+    "y": {
+      "field": "unmet_demand",
+      "type": "quantitative",
+      "title": ""
+    }
+  }
+}
+' |> as_vegaspec()
+```
+
+## Excercise 2
+
+a\. You may be wondering just what `perc` means in this data set. Create a graphic that shows the sum of all the values of `perc` in each year separated by men and women. Explain what your graphic reveals about what `perc` means.
+
+-   perc means represents the percentage of workers of a given two gender who are in a particular occupation in that year.
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 600,
+  "height": 400,
+  "data": {
+    "url": "https://cdn.jsdelivr.net/npm/vega-datasets@2.8.0/data/jobs.json"
+  },
+  
+  "height": 200,
+  "weight": 300,
+
+  "mark": {
+    "type": "line",
+    "point": true,
+    "tooltip": true
+  },
+
+  "encoding": {
+    "x": {
+      "field": "year",
+      "type": "ordinal"
+          },
+
+    "y": {
+      "aggregate": "sum",
+      "field": "perc",
+      "type": "quantitative",
+      "scale": {"domain": [0, 1]}
+    },
+    
+    "color": {
+      "field": "sex",
+      "type": "nominal",
+      "title": "Gender"
+          }
+  }
+}
+' |> as_vegaspec()
+```
+
+b\.
