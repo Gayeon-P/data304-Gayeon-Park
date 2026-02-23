@@ -1,5 +1,5 @@
 ---
-title: "hw8"
+title: "hw8_Gayeon Park"
 format: html
 output-file: "index"
 ---
@@ -284,14 +284,14 @@ b\.
 
 ```{r}
 library(vegawidget)
-'
-{
+'{
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "data": {
     "url": "https://cdn.jsdelivr.net/npm/vega-datasets@2.8.0/data/jobs.json"
   },
 
-  "transform": [{"filter": {"field": "year", "oneOf": [1920, 1940, 1960, 1980]}},
+  "transform": [
+    {"filter": {"field": "year", "oneOf": [1920, 1940, 1960, 1980]}},
     {"pivot": "sex","value": "perc","groupby": ["job", "year"]}
   ],
 
@@ -301,7 +301,7 @@ library(vegawidget)
     "height": 200,
     "width": 200,
 
-    "mark": {"type": "point", "tooltip":true},
+    "mark": {"type": "point", "tooltip": true},
 
     "encoding": {
     "x": {
@@ -314,21 +314,15 @@ library(vegawidget)
     "y":{
       "field": "women",
       "type": "quantitative",
-      "axis": {"format": ".0%"}},
+      "axis": {"format": ".0%"},
       "title": "Women"
-
+    }
+    }
   }
-    },
-
-    "tooltip": [
-      {"field": "job"},
-      {"field": "men", "format": ".0%"},
-      {"field": "women", "format": ".0%"}
-    ]
 }
-
 ' |> as_vegaspec()
 ```
+
 
 c\.
 

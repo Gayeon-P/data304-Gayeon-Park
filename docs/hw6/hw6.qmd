@@ -1,5 +1,5 @@
 ---
-title: "hw6"
+title: "hw6_Gayeon Park"
 format: html
 output-file: "index"
 ---
