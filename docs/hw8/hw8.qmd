@@ -281,3 +281,179 @@ library(vegawidget)
 ```
 
 b\.
+
+```{r}
+library(vegawidget)
+'
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://cdn.jsdelivr.net/npm/vega-datasets@2.8.0/data/jobs.json"
+  },
+
+  "transform": [{"filter": {"field": "year", "oneOf": [1920, 1940, 1960, 1980]}},
+    {"pivot": "sex","value": "perc","groupby": ["job", "year"]}
+  ],
+
+  "facet": {"field": "year","type": "ordinal"},
+
+  "spec": {
+    "height": 200,
+    "width": 200,
+
+    "mark": {"type": "point", "tooltip":true},
+
+    "encoding": {
+    "x": {
+      "field": "men",
+      "type": "quantitative",
+      "axis": {"format": ".0%"},
+      "title": "Men"
+      },
+
+    "y":{
+      "field": "women",
+      "type": "quantitative",
+      "axis": {"format": ".0%"}},
+      "title": "Women"
+
+  }
+    },
+
+    "tooltip": [
+      {"field": "job"},
+      {"field": "men", "format": ".0%"},
+      {"field": "women", "format": ".0%"}
+    ]
+}
+
+' |> as_vegaspec()
+```
+
+c\.
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://cdn.jsdelivr.net/npm/vega-datasets@2.8.0/data/jobs.json"
+  },
+
+  "transform": [{"filter": {"field": "year", "oneOf": [1920, 1940, 1960, 1980]}},
+  {"joinaggregate": [
+    {"op": "sum",
+    "field": "perc",
+    "as": "total_gender_perc"}
+  ], "groupby": ["year", "sex"]
+  },
+  {"calculate": "datum.perc / datum.total_gender_perc",
+  "as": "perc_within_gender"},
+  {"pivot": "sex","value": "perc", "groupby": ["job", "year"]}
+  ],
+
+  "facet": {"field": "year", "type": "ordinal"},
+
+  "spec": {
+    "height": 200,
+    "width": 200,
+
+    "mark": {"type": "point", "tooltip":true},
+
+    "encoding": {
+    "x": {
+      "field": "men",
+      "type": "quantitative",
+      "axis": {"format": ".0%"},
+      "title": "Men"
+      },
+
+    "y":{
+      "field": "women",
+      "type": "quantitative",
+      "axis": {"format": ".0%"},
+      "title": "Women"},
+
+    "tooltip": [
+      {"field": "job", "type": "nominal"},
+      {"field": "men", "title": "perc of men:","format": ".1%"},
+      {"field": "women", "title": "% of Women","format": ".1%"}]
+
+    }
+  }
+}
+' |> as_vegaspec()
+```
+
+## Excercise 3
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Gas Price Trends by Region",
+    "subtitle": "Prices in US $ per gallon (1991-2016)"
+  },
+  "data": {
+    "url": "https://gist.githubusercontent.com/honggikim02/03110b3ff72b77858064f84f36ee2c42/raw/137ed6410fd4021801b29c3e81b3c46e3f623a33/pump_gas_price.csv"
+  },
+  "transform": [
+    {
+      "lookup": "country",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv"
+        },
+        "key": "name",
+        "fields": ["region"]
+      }
+    },
+    {
+      "filter": "datum.region != null"
+    },
+    {
+      "fold": [
+        "1991", "1992", "1993", "1994", "1995", "1996", "1998", "2000", 
+        "2002", "2004", "2006", "2008", "2010", "2012", "2014", "2016"
+      ],
+      "as": ["year", "price"]
+    }
+  ],
+  "facet": {
+    "field": "region",
+    "type": "nominal",
+    "columns": 4
+  },
+  "spec": {
+    "width": 350,
+    "height": 200,
+    "mark": {"type": "point", "tooltip": true},
+    "encoding": {
+      "x": {
+        "field": "year",
+        "type": "ordinal",
+        "title": "Year"
+      },
+      "y": {
+        "field": "price",
+        "type": "quantitative",
+        "title": "Gas Price (US $ / Gallon)"
+      },
+      "color": {
+        "field": "country",
+        "type": "nominal",
+        "title": "Region"
+      },
+      "tooltip": [
+        {"field": "country", "title": "Country"},
+        {"field": "year", "title": "Year"},
+        {"field": "price", "title": "Price","format":"$.2f"}
+      ]
+    }
+  }
+}
+' |> as_vegaspec()
+```
