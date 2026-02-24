@@ -1,7 +1,9 @@
 ---
-title: "hw5_Gayeon Park"
+title: "HW05"
+subtitle: "Gayeon Park"
 format: html
 output-file: "index"
+code-fold: true
 ---
 
 ![Excersise 2_Time map](https://xeno.graphics/wp-content/uploads/2018/07/timemap.png){width="70%"}

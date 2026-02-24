@@ -1,7 +1,9 @@
 ---
-title: "hw6_Gayeon Park"
+title: "HW06"
+subtitle: "Gayeon Park"
 format: html
 output-file: "index"
+code-fold: true
 ---
 
 ## **Excercise 1**

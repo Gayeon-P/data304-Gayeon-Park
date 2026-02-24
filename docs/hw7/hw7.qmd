@@ -1,7 +1,9 @@
 ---
-title: "hw7_Gayeon Park"
+title: "HW07"
+subtitle: "Gayeon Park"
 format: html
 output-file: "index"
+code-fold: true
 ---
 
 ## **Excercise 1**
@@ -188,7 +190,7 @@ c\. There are two figures in this video that come from Chapter 1 of Tufte ([2001
 -   The graphic in page 43 which is a narrative graphic of spaces and time.
 -   The graphic in page 46 which is a relational graphic.
 
-## **Exercise 3** 
+## **Exercise 3**
 
 a\. In Vega-Lite lingo, what makes something be a heat map?
 
@@ -260,7 +262,7 @@ d\. But starting at around 44:12, he presents a heat map as a “show pony”. W
 
 -   Healy shows the later “show pony” heat map to highlight broader patterns and overall structure, not the precise value of each cell. In that case, the problem with color comparisons isn’t important because viewers are looking at big patterns rather than exact comparisons between individual values.
 
-## **Excercise 4 (Pie Chart)** 
+## **Excercise 4 (Pie Chart)**
 
 a\. What does Healy have to say about pie charts in his video?
 

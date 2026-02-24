@@ -1,7 +1,8 @@
 ---
-title: "class_Gayeon Park"
+title: "Practice in classtime"
 format: html
 output-file: "index"
+code-fold: true
 ---
 
 ```{r}
