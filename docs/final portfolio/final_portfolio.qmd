@@ -1,0 +1,615 @@
+---
+title: "Final Portfolio"
+subtitle: "Gayeon Park"
+format: html
+output-file: "index"
+code-fold: true
+---
+
+## **Exercise 1 (HW 4 revision)**
+
+a\. Scroll through the [HW 4 Gallery](https://calvin-data304.netlify.app/hw/hw3-gallery.qmd) to see the plots we created at that time. Find an example that has that has something you like about it and explain what you like.
+
+-   One example I like from the gallery is “Comparing Twin” in #2. Although it still needs a lot of improvement, I like the way the plot is divided by each region and uses facets to compare each pair of twins. This structure makes the visualization more organized and helps make it clearer to compare the genetic shares for each pair of twins. Also "Comparing kits" in #9 shows the story the student wants to tell. The clear and descriptive title helps me easily understand that the plot is comparing three different types of kits on the x-axis and distinguishing them by region. It also uses different colors for each region, which makes the data easier to distinguish. In addition, the y-axis title is very precise, so I can clearly understand what measurement is being shown.
+
+b\. Find an example that has something you don’t like, and explain what you don’t like about it.
+
+-   I don't like example #4 because the data for Twin A and Twin B are too similar, causing the marks to overlap and create a messy visual. Because the points are on top of each other, it is hard to distinguish between the two individuals. Additionally, the graphic lacks a clear story or message, making it difficult to understand at a glance what he is trying to communicate about the genetic comparison.
+
+c\. Now create two graphics, one that helps compare the kits and one that helps compare twins.
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": {
+    "url": "https://calvin-data304.netlify.app/data/twins-genetics-wide.json"
+  },
+  "title": {
+    "text": "Comparing Twins in Ancestry Kit by Region",
+    "anchor": "middle",
+    "fontSize": 20
+  },
+  "mark": {"type": "bar","tooltip":true},
+  "width":200,
+  "height": 200,
+  "encoding": {
+    "x": {
+      "field": "region", 
+      "type": "nominal", 
+      "axis": {"labelAngle": -50},
+      "title": ""},
+    "y": {
+      "field": "Ancestry",
+      "type": "quantitative",
+      "title": "Genetic Share"
+    },
+    "color": {"field": "id", "type": "nominal", "title": "Twin (A / B)", "scale": {"scheme": "set2"}},
+    "xOffset": {"field": "id"},
+    "facet": {"field": "pair", "title": null, "columns": 3,
+    "header": {"labelExpr": "\'Pair\' + datum.value", "labelFontSize":12}}
+  },
+
+  "resolve": {"axis": {"x": "independent"}}
+}
+' |> as_vegaspec()
+```
+
+I focus on comparing twins in the Ancestry DNA kit by region. This graph looks at how similar the genetic share results are between twin pairs from different regions using data from Ancestry DNA kit. By breaking the data into individual facets for each twin pair, the audience can observe how "Twin A" and "Twin B" compare in their reported genetic shares. In many cases, the bars for each twin are nearly identical, suggesting strong consistency in the DNA test results. However, small differences can still appear in some regions, allowing viewers to notice subtle variations between twins.
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": {
+    "url": "https://calvin-data304.netlify.app/data/twins-genetics-long.json"
+  },
+  "title": {
+    "text": "Total Genetic Share by DNA Kit",
+    "subtitle": "Stacked by Twin Pairs",
+    "fontSize": 18,
+    "anchor": "middle",
+    "offset": 10
+  },
+  "columns": 3,
+  "facet": {
+    "field": "region",
+    "type": "nominal",
+    "title": null,
+    "header": {
+      "labelFontSize": 14,
+      "labelFontWeight": "bold",
+      "labelPadding": 10,
+      "labelAnchor": "middle"
+    }
+  },
+  "spec": {
+    "width": 150,
+    "height": 200,
+    "transform": [
+      {
+        "calculate": "\'Pair \' + datum.pair",
+        "as": "pair_label"
+      }
+    ],
+    "mark": "bar",
+    "encoding": {
+      "x": {
+        "field": "kit",
+        "type": "nominal",
+        "title": null,
+        "axis": {"labelAngle": -45}
+      },
+      "y": {
+        "aggregate": "sum",
+        "field": "genetic share",
+        "type": "quantitative",
+        "title": "Total Genetic Share"
+      },
+      "color": {
+        "field": "pair_label",
+        "type": "nominal",
+        "title": null,
+        "scale": {"scheme": "category10"},
+        "legend": {
+          "orient": "top",
+          "direction": "horizontal",
+          "padding": 15
+        }
+      },
+      "tooltip": [
+        {"field": "region", "title": "Region"},
+        {"field": "pair_label", "title": "Pair"},
+        {"field": "kit", "title": "Kit"},
+        {"aggregate": "sum", "field": "genetic share", "title": "Share Amount"}
+      ]
+    }
+  },
+  "resolve": {
+    "axis": {"x": "independent"}
+  },
+  "config": {
+    "legend": {
+      "anchor": "middle"
+    }
+  }
+}
+' |> as_vegaspec()
+```
+
+This graphic shows the total genetic share reported by different DNA kits across regions. Each region is displayed in a separate facet, allowing audience to compare how results very geographically. Within each region, the bars represent different DNA kits, and the stacked colors show contributions from each twin pair. This visualization helps highlight how the reported genetic shares differ depending on the testing kit while also showing how twin pairs contribute to the totals. By organizing the data this way, audience can easily compare patterns between regions and observe whether certain kits report higher or lower genetic shares.
+
+## **Exercise 2 (Data and graphics challenge)**
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://gist.githubusercontent.com/honggikim02/cdb6d790662954fd22d8d99db1c22829/raw/c288d91b37cbf45677b8c37ecd0da7bb99b03f03/customer.csv"
+  },
+  "title": {
+    "text": \"Comparing Each Channel\'s Touchpoints",
+    "fontSize": 18,
+    "anchor": "middle"
+  },
+  
+  "width": 450,
+  "height": 250,
+  "transform": [
+    {
+      "fold": ["Phone Touchpoints", "Chat Touchpoints", "Email Touchpoints"],
+      "as": ["Channel", "Count"]
+    }
+  ],
+  "layer": [
+    {
+      "mark": {"type": "line", "tooltip": true, "point": true},
+      "encoding": {
+        "x": {
+          "field": "Date",
+          "type": "nominal",
+          "sort": "ascending",
+          "axis": {"labelAngle": -50, "title": null}
+        },
+        "y": {
+          "field": "Count",
+          "type": "quantitative",
+          "title": "Number of Touchpoints (K)"
+        },
+        "color": {
+          "field": "Channel",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Chat Touchpoints", "Email Touchpoints", "Phone Touchpoints"],
+            "range": ["red", "green", "blue"]
+          },
+          "legend": null
+        },
+        "size": {
+          "condition": {"test": "datum.Channel == \'Chat Touchpoints\'", "value": 4},
+          "value": 1.5
+        },
+        "opacity": {
+          "condition": {"test": "datum.Channel == \'Chat Touchpoints\'", "value": 1},
+          "value": 0.25
+        }
+      }
+    },
+    {
+      "transform": [
+        {
+          "window": [{"op": "rank", "as": "rank"}],
+          "sort": [{"field": "Date", "order": "descending"}],
+          "groupby": ["Channel"]
+        },
+        {
+          "filter": "datum.rank == 1"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 10,
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "x": {"field": "Date", "type": "nominal", "sort": "ascending"},
+        "y": {"field": "Count", "type": "quantitative"},
+        "text": {"field": "Channel"},
+        "color": {"field": "Channel", "scale": {"range": ["red", "green", "blue"]}}
+      }
+    }
+  ],
+  "config": {
+    "view": {"stroke": null}
+  }
+}
+' |> as_vegaspec()
+```
+
+-   The numbers don't match. The title says there are 500K touchpoints, but the Y-axis only goes up to 1.25, which is confusing for the reader.
+
+-   The chart uses a stacked bar design, which makes it very hard to see the exact values for each individual category. Because the bars are piled on top of each other, the viewer cannot easily tell if a specific channel, like "Chat", is growing or shrinking.
+
+-   The total numbers (478,123 and 496,234) are just floating at the top without enough detail. It is not clear which specific months or years these totals cover, and because these large numbers do not match the small 1.25 scale on the side, the data feels unreliable.
+
+-   Although the previous graph may contain a story, it was difficult to understand what the graph was emphasizing or trying to communicate when first viewing it. Because of it, I decided to focus on a different aspect of the data and create a new graph that highlights a clearer story. This graph shows that email touchpoints have been steadily increasing compared to the other three channels. Based on this trend, email marketing appears to be an effective strategy. Even though other channels may currently have higher accessibility or reach than email, the consistent growth of email touchpoints suggests that it could become a strong and reliable marketing channel over time.
+
+## **Exercise 3 (A new challenge)**
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "data": {
+    "values": [
+      {"Country": "Afghnistan", "Observation_Year": 1980, "Coal_CO2": 0.315762013, "Oil_CO2": 0.925256014, "Gas_CO2": 0.18725399672985077},
+      {"Country": "Afghnistan", "Observation_Year": 2000, "Coal_CO2": 0.003664, "Oil_CO2": 0.787760019, "Gas_CO2": 0.22350400686264038},
+      {"Country": "Afghnistan", "Observation_Year": 2020, "Coal_CO2": 3.634687901, "Oil_CO2": 7.269375801, "Gas_CO2": 0.15388800203800201},
+      {"Country": "Albania", "Observation_Year": 1980, "Coal_CO2": 2.322976112, "Oil_CO2": 1.571856022, "Gas_CO2": 0.7731040120124817},
+      {"Country": "Albania", "Observation_Year": 2000, "Coal_CO2": 0.069531001, "Oil_CO2": 2.839801073, "Gas_CO2": 0.021957000717520714},
+      {"Country": "Albania", "Observation_Year": 2020, "Coal_CO2": 0.571583986, "Oil_CO2": 2.876240015, "Gas_CO2": 1.3217530250549316},
+      {"Country": "Almenia", "Observation_Year": 1980, "Coal_CO2": 0.9061989784240723, "Oil_CO2": 4.438343048095703, "Gas_CO2": 2.0372331142425537},
+      {"Country": "Almenia", "Observation_Year": 2000, "Coal_CO2": 0.0, "Oil_CO2": 0.7877600193023682, "Gas_CO2": 2.5648000240325928},
+      {"Country": "Almenia", "Observation_Year": 2020, "Coal_CO2": 0.02932799980044365, "Oil_CO2": 1.451738953590393, "Gas_CO2": 4.90145206451416}
+    ]
+  },
+  "title": {
+    "text": "Global CO2 Emission by Country",
+    "fontSize": 18,
+    "anchor": "middle"
+  },
+  "transform": [
+    {
+      "fold": ["Oil_CO2", "Coal_CO2", "Gas_CO2"],
+      "as": ["CO2_Type", "CO2_Value"]
+    }
+  ],
+  "facet": {
+    "field": "CO2_Type",
+    "type": "nominal",
+    "title": null
+  },
+  "spec": {
+    "width": 200,
+    "height": 250,
+    "layer": [
+      {
+        "mark": {"type": "bar", "tooltip": true},
+        "encoding": {
+          "x": {
+            "field": "Observation_Year",
+            "type": "ordinal",
+            "axis": {"labelAngle": 0},
+            "title": "Year"
+          },
+          "xOffset": {
+            "field": "Country",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "CO2_Value",
+            "type": "quantitative",
+            "title": "CO2 Emissions"
+          },
+          "color": {
+            "field": "Country",
+            "type": "nominal",
+            "title": "Country"
+          },
+          "tooltip": [
+            {"field": "Country", "type": "nominal"},
+            {"field": "Observation_Year", "type": "ordinal", "title": "Year"},
+            {"field": "CO2_Value", "type": "quantitative", "title": "CO2 Value"},
+            {"field": "CO2_Type", "type": "nominal", "title": "Type"}
+          ]
+        }
+      },
+      {
+        "transform": [
+          {"filter": "datum.CO2_Type === \'Coal_CO2\' && datum.Country === \'Afghnistan\'"}
+        ],
+        "mark": {"type": "line", "color": "black", "point": true},
+        "encoding": {
+          "x": {"field": "Observation_Year", "type": "ordinal"},
+          "xOffset": {"field": "Country", "type": "nominal"},
+          "y": {"field": "CO2_Value", "type": "quantitative"}
+        }
+      },
+      {
+        "transform": [
+          {"filter": "datum.CO2_Type === \'Gas_CO2\' && datum.Country === \'Almenia\'"}
+        ],
+        "mark": {"type": "line", "color": "black", "point": true},
+        "encoding": {
+          "x": {"field": "Observation_Year", "type": "ordinal"},
+          "xOffset": {"field": "Country", "type": "nominal"},
+          "y": {"field": "CO2_Value", "type": "quantitative"}
+        }
+      },
+      {
+        "transform": [
+          {"filter": "datum.CO2_Type === \'Oil_CO2\' && datum.Country === \'Afghnistan\'"}
+        ],
+        "mark": {"type": "line", "color": "black", "point": true},
+        "encoding": {
+          "x": {"field": "Observation_Year", "type": "ordinal"},
+          "xOffset": {"field": "Country", "type": "nominal"},
+          "y": {"field": "CO2_Value", "type": "quantitative"}
+        }
+      }
+    ]
+  }
+}
+' |> as_vegaspec()
+```
+
+URL: <https://gist.githubusercontent.com/Gayeon-P/de36937012d865574b17a4e40b4baa4f/raw/3e7508fcb4ca5b2e3f30f902ad6ba6e9edadc8fc/co2.csv>\
+
+This chart shows CO2 emissions from three sources which are coal, oil, and gas, across Afghanistan, Albania, and Armenia from 1980 to 2020. Afghanistan stands out in both Coal and Oil emissions, showing a sharp increase by 2020, highlighted by the black trend line. Armenia shows a rising trend in Gas CO2 emissions over time, while Albania remains relatively stable across all three fuel types. Overall, the chart reveals that fossil fuel emissions have grown significantly by 2020, with Afghanistan driving much of that increase in coal and oil, and Armenia leading the rise in gas emissions.
+
+## **Exercise 4 (Your masterpiece)**
+
+```{r}
+library(vegawidget)
+' 
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://gist.githubusercontent.com/Gayeon-P/55d54ebd1fc1261196520a94c483e70e/raw/6e11794feb8857989b55ffb64c51bff26d1f6cd6/student.csv"
+  },
+  "title": {
+    "text": "Student Test Score Analysis",
+    "fontSize": 20,
+    "anchor": "middle"
+  },
+  "params": [
+    {
+      "name": "subject",
+      "value": "math_score",
+      "bind": {
+        "input": "select",
+        "options": ["math_score", "reading_score", "writing_score"],
+        "labels": ["Math", "Reading", "Writing"],
+        "name": "Subject: "
+      }
+    }
+  ],
+  "resolve": {
+    "scale": {"color": "independent"}
+  },
+  "hconcat": [
+    {
+      "title": {
+        "text": "Average Score in Each Subject",
+        "fontSize": 14,
+        "anchor": "middle"
+      },
+      "width": 280,
+      "height": 200,
+      "transform": [
+        {
+          "fold": ["math_score", "reading_score", "writing_score"],
+          "as": ["subject_name", "score"]
+        },
+        {"filter": "datum.subject_name === subject"},
+        {
+          "aggregate": [{"op": "mean", "field": "score", "as": "avg_score"}],
+          "groupby": ["race/ethnicity", "subject_name", "test_preparation_course"]
+        }
+      ],
+      "mark": {"type": "bar", "cornerRadiusTopLeft": 3, "cornerRadiusTopRight": 3},
+      "encoding": {
+        "x": {
+          "field": "race/ethnicity",
+          "type": "nominal",
+          "title": "",
+          "axis": {"labelAngle": 0},
+          "sort": ["group A", "group B", "group C", "group D", "group E"]
+        },
+        "y": {
+          "field": "avg_score",
+          "type": "quantitative",
+          "title": "Average Score",
+          "scale": {"domain": [0, 100]},
+          "axis": {"grid": true}
+        },
+        "color": {
+          "field": "test_preparation_course",
+          "type": "nominal",
+          "scale": {
+            "domain": ["none", "completed"],
+            "range": ["#e15759", "#4e79a7"]
+          },
+          "legend": {"title": "Test Preparation"}
+        },
+        "xOffset": {"field": "test_preparation_course", "type": "nominal"},
+        "tooltip": [
+          {"field": "race/ethnicity", "type": "nominal", "title": "Group"},
+          {"field": "avg_score", "type": "quantitative", "title": "Avg Score", "format": ".1f"}
+        ]
+      }
+    },
+    {
+      "title": {
+        "text": "Group Average Score & Parental Education %",
+        "fontSize": 14,
+        "anchor": "middle"
+      },
+      "width": 330,
+      "height": 200,
+      "resolve": {
+        "scale": {"color": "independent", "y": "independent"},
+        "axis": {"y": "independent"}
+      },
+      "layer": [
+        {
+          "transform": [
+            {
+              "aggregate": [
+                {"op": "sum", "field": "math_score", "as": "sum_math"},
+                {"op": "sum", "field": "reading_score", "as": "sum_reading"},
+                {"op": "sum", "field": "writing_score", "as": "sum_writing"},
+                {"op": "count", "as": "student_count"}
+              ],
+              "groupby": ["race/ethnicity"]
+            },
+            {
+              "calculate": "(datum.sum_math + datum.sum_reading + datum.sum_writing) / (datum.student_count * 3)",
+              "as": "group_avg_score"
+            }
+          ],
+          "encoding": {
+            "x": {
+              "field": "race/ethnicity",
+              "type": "nominal",
+              "title": "",
+              "axis": {"labelAngle": 0}
+            },
+            "y": {
+              "field": "group_avg_score",
+              "type": "quantitative",
+              "title": "Average Score",
+              "scale": {"domain": [0, 100]},
+              "axis": {"orient": "left"}
+            }
+          },
+          "layer": [
+            {
+              "mark": {"type": "bar", "cornerRadiusTopLeft": 3, "cornerRadiusTopRight": 3},
+              "encoding": {
+                "color": {
+                  "field": "race/ethnicity",
+                  "type": "nominal",
+                  "legend": null,
+                  "scale": {"scheme": "category10"}
+                }
+              }
+            },
+            {
+              "mark": {
+                "type": "text",
+                "align": "center",
+                "baseline": "bottom",
+                "dy": -5,
+                "fontSize": 12,
+                "fontWeight": "bold"
+              },
+              "encoding": {
+                "text": {
+                  "field": "group_avg_score",
+                  "type": "quantitative",
+                  "format": ".1f"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "transform": [
+            {
+              "aggregate": [{"op": "count", "as": "edu_count"}],
+              "groupby": ["race/ethnicity", "parental_level_of_education"]
+            },
+            {
+              "joinaggregate": [
+                {"op": "sum", "field": "edu_count", "as": "group_total"}
+              ],
+              "groupby": ["race/ethnicity"]
+            },
+            {
+              "calculate": "(datum.edu_count / datum.group_total) * 100",
+              "as": "edu_percent"
+            },
+            {
+              "filter": "datum.parental_level_of_education !== \'some college\' && datum.parental_level_of_education !== \'high school\' && datum.parental_level_of_education !== \'some high school\'"
+            }
+          ],
+          "encoding": {
+            "x": {"field": "race/ethnicity", "type": "nominal"},
+            "y": {
+              "field": "edu_percent",
+              "type": "quantitative",
+              "title": "Percent %",
+              "scale": {"domain": [0, 100]},
+              "axis": {"orient": "right"}
+            },
+            "color": {
+              "field": "parental_level_of_education",
+              "type": "nominal",
+              "scale": {
+                "domain": ["associate\'s degree", "bachelor\'s degree", "master\'s degree"],
+                "range": ["#e15759", "#76b7b2", "#edc948"]
+              },
+              "legend": null
+            }
+          },
+          "layer": [
+            {
+              "mark": {"type": "line", "point": true}
+            },
+            {
+              "transform": [
+                {"filter": {"field": "race/ethnicity", "equal": "group E"}}
+              ],
+              "mark": {
+                "type": "text",
+                "align": "left",
+                "dx": 8,
+                "fontSize": 13,
+                "fontWeight": "bold"
+              },
+              "encoding": {
+                "text": {"field": "parental_level_of_education", "type": "nominal"}
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+' |> as_vegaspec()
+```
+
+URL: <https://www.kaggle.com/datasets/spscientist/students-performance-in-exams>
+
+I designed the graphic to make comparisons clear and easy to understand. In the first chart, I used grouped bars instead of stacked bars so that all values share the same baseline, which makes it easier to compare scores across groups. I also added a param filter for subjects (math, reading, writing) so users can focus on one variable at a time, reducing clutter and improving clarity. Using color to show test preparation status helps highlight differences, and the consistent scale from 0-10 makes the comparisons fair and accurate.
+
+In the second graph, I combined a bar chart and a line chart to show two different types of information together that average scores and parental education percentages. I used separate y-axes to avoid confusion and added labels to improve readability. This follows the principle of showing multiple related variables while keeping them visually distinct. I also limited the number of education categories to avoid overcrowding the chart.
+
+As alternatives, I considered using stacked bar charts and pie charts. However, stacked bars make it harder to compare values because they do not share the same baseline, and pie charts are less precise for comparing differences. I also thought about showing all subjects at once, but that made the chart too messy, so I chose an interactive filter instead.
+
+## Exercise 5 (Using your palette)
+
+1.  Color - used in both charts (test_preparation_course, race/ethnicity, parental_level_of_education).
+2.  xOffset - used in the left chart to dodge bars by test_preparation_course
+3.  text - used in both label layers
+4.  tooltip - left chart has tooltip with group and avg score.
+5.  Layer - Right chart used nested layer that layering line and bar setting different y-axis, but the same range so that try to make audience not confused each y range.
+6.  hconcat - used to place two charts side by side.
+7.  use "domain" and "range" in "scale" to custom color scales in both charts.
+8.  use "param" with a "select" to filter by subject
+
+## Exercise 6 (Keep learning)
+
+a\. Cite 2 or 3 specific examples in the graphics in your portfolio where you used a feature of Vega-Lite/vegabrite/Altair/altair that we *did not* learn in class. This might be using a new kind of mark or transform, or a way to customize a feature of the graphic, or a way to use interaction, or…
+
+-   "encoding": {:strokeDash {:field "\~" :type "\~"}, – I found the line chart with a dash bar in the Vega-Lite example Gallery in EDN. The "strokeDash" encoding channel in vegalite maps a data field to different line styles, such as solid or dashed lines.
+
+-   "transform": \[{"quantile": ...}..\] - I found in the website of Vega-Lite documentation. It transform calculates the distributions of a data field by breaking it into evenly spaced probability points. I believe that we never used this transform in class, we only learned basic transforms like filter, groupby, and calculate.
+
+b\. You will also want to keep learning about principles of good graphics design. Cite 2 or 3 specific examples where you followed the advice in one of the resources below. Provide specific page (for print or pdf) or section (for HTML) references. Include direct links, if possible. (HTML books often make it easy to link directly to a section.)
+
+-   <https://clauswilke.com/dataviz/nested-proportions.html> (11.2)
+
+    Choosing a grouped or faceted chart instead of a stacked bar chart in one of the graphics. Wilke warns in Ch.11 that stacked bars and mosaic plots share a common limitation that direct comparison is difficult because rectangles do not share the same baseline. By avoiding stacking, the chart makes it easier for readers to compare values across categories directly.
+
+-   <https://clauswilke.com/dataviz/geospatial-data.html> (15.1)
+
+    Maps focused on a small geographic area rather than the whole world, which naturally reduces projection distortion. Wilke notes in Ch15 that the transverse Mercator projection works well for small areas spanning only a few degrees of longitude, where distortion is minimal. The author argues that keeping a map zoomed in to a relevant region is a good design choice that avoids misleading readers with stretched shapes or areas.
